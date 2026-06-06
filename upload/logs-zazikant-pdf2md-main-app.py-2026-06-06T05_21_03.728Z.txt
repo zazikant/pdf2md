@@ -1,0 +1,115 @@
+
+[     UTC     ] Logs for pdf2md-2fr4njbkqmcsuerxxomh3b.streamlit.app/
+────────────────────────────────────────────────────────────────────────────────────────
+[05:20:13] 🚀 Starting up repository: 'pdf2md', branch: 'main', main module: 'app.py'
+[05:20:13] 🐙 Cloning repository...
+[05:20:13] 🐙 Cloning into '/mount/src/pdf2md'...
+
+[05:20:14] 🐙 Cloned repository!
+[05:20:14] 🐙 Pulling code changes from Github...
+[05:20:14] 📦 Processing dependencies...
+Check if streamlit is installed
+cat: /mount/admin/install_path: No such file or directory
+
+──────────────────────────────── Installing Streamlit ──────────────────────────────────
+
+Using uv pip install.
+Using Python 3.14.5 environment at /home/adminuser/venv
+Resolved 42 packages in 434ms
+Prepared 42 packages in 1.61s
+Installed 42 packages in 301ms
+ + altair==6.2.1
+ + anyio==4.13.0
+ + attrs==26.1.0
+ + blinker==1.9.0
+ + cachetools==7.1.4
+ + certifi==2026.5.20
+ + charset-normalizer==3.4.7
+ [2026-06-06 05:20:17.027131] + click==8.4.1
+ + gitdb==4.0.12
+ + gitpython==3.1.50
+ + h11==0.16.0
+ [2026-06-06 05:20:17.027369] + httptools==0.8.0
+ + idna==3.18
+ + itsdangerous==2.2.0
+ + jinja2==3.1.6
+ + jsonschema==4.26.0
+ + jsonschema-specifications==2025.9.1
+ + markupsafe==3.0.3
+ + narwhals==2.22.1
+ + numpy==2.4.6
+ + packaging==26.2
+ + pandas==3.0.3
+ + pillow==12.2.0
+ + protobuf==7.35.0
+ + pyarrow==24.0.0
+ + pydeck[2026-06-06 05:20:17.027678] ==0.9.2
+ + python-dateutil==2.9.0.post0
+ + python-multipart==0.0.32
+ + referencing==0.37.0
+ + requests==2.34.2
+ [2026-06-06 05:20:17.027892] + rpds-py==2026.5.1
+ + six==1.17.0
+ + smmap==5.0.3
+ + starlette==1.2.1
+ + streamlit==1.58.0
+ + tenacity==9.1.4
+ + toml==0.10.2
+ + typing-extensions[2026-06-06 05:20:17.028045] ==4.15.0
+ + urllib3==2.7.0
+ + uvicorn==0.49.0
+ + watchdog==6.0.0
+ + [2026-06-06 05:20:17.028182] websockets==16.0
+
+────────────────────────────────────────────────────────────────────────────────────────
+
+[05:20:18] 📦 Processed dependencies!
+cat: /mount/admin/install_path: No such file or directory
+2026-06-06 05:20:20.122 Uvicorn server started on 0.0.0.0:8501
+
+
+
+2026-06-06 05:20:25.257 Uncaught app execution
+Traceback (most recent call last):
+  File "/home/adminuser/venv/lib/python3.14/site-packages/streamlit/runtime/scriptrunner/exec_code.py", line 129, in exec_func_with_error_handling
+    result = func()
+  File "/home/adminuser/venv/lib/python3.14/site-packages/streamlit/runtime/scriptrunner/script_runner.py", line 789, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mount/src/pdf2md/app.py", line 19, in <module>
+    import fitz  # PyMuPDF
+    ^^^^^^^^^^^
+ModuleNotFoundError: No module named 'fitz'
+2026-06-06 05:20:25.542 Uncaught app execution
+Traceback (most recent call last):
+  File "/home/adminuser/venv/lib/python3.14/site-packages/streamlit/runtime/scriptrunner/exec_code.py", line 129, in exec_func_with_error_handling
+    result = func()
+  File "/home/adminuser/venv/lib/python3.14/site-packages/streamlit/runtime/scriptrunner/script_runner.py", line 789, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mount/src/pdf2md/app.py", line 19, in <module>
+    import fitz  # PyMuPDF
+    ^^^^^^^^^^^
+ModuleNotFoundError: No module named 'fitz'
+2026-06-06 05:20:27.112 Uncaught app execution
+Traceback (most recent call last):
+  File "/home/adminuser/venv/lib/python3.14/site-packages/streamlit/runtime/scriptrunner/exec_code.py", line 129, in exec_func_with_error_handling
+    result = func()
+  File "/home/adminuser/venv/lib/python3.14/site-packages/streamlit/runtime/scriptrunner/script_runner.py", line 789, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mount/src/pdf2md/app.py", line 19, in <module>
+    import fitz  # PyMuPDF
+    ^^^^^^^^^^^
+ModuleNotFoundError: No module named 'fitz'
+2026-06-06 05:20:30.890 Uncaught app execution
+Traceback (most recent call last):
+  File "/home/adminuser/venv/lib/python3.14/site-packages/streamlit/runtime/scriptrunner/exec_code.py", line 129, in exec_func_with_error_handling
+    result = func()
+  File "/home/adminuser/venv/lib/python3.14/site-packages/streamlit/runtime/scriptrunner/script_runner.py", line 789, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mount/src/pdf2md/app.py", line 19, in <module>
+    import fitz  # PyMuPDF
+    ^^^^^^^^^^^
+ModuleNotFoundError: No module named 'fitz'
