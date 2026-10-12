@@ -26,6 +26,7 @@ import io
 import os
 import sys
 import time
+import uuid
 
 try:
     import fitz  # PyMuPDF
@@ -42,6 +43,10 @@ OPENCODE_API_URL = "https://opencode.ai/zen/go/v1/chat/completions"
 MIMO_MODEL = "mimo-v2.6-pro"
 SUPPORTED_EXTENSIONS = {"pdf", "png", "jpg", "jpeg", "webp"}
 IMAGE_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
+
+# OpenCode Go API requires an x-opencode-session header for request routing.
+# One stable id per CLI run keeps all page requests routed to the same upstream.
+_SESSION_ID = f"pdf2md-cli-{uuid.uuid4().hex[:12]}"
 
 
 # ── Same prompts as the Streamlit app ──────────────────────────────────
@@ -131,7 +136,11 @@ def call_mimo_vision(image: Image.Image, api_key: str, prompt: str, mime_type: s
     ]
     resp = requests.post(
         OPENCODE_API_URL,
-        headers={"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"},
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}",
+            "x-opencode-session": _SESSION_ID,
+        },
         json={
             "model": MIMO_MODEL,
             "messages": [
@@ -147,7 +156,10 @@ def call_mimo_vision(image: Image.Image, api_key: str, prompt: str, mime_type: s
     if not resp.ok:
         raise RuntimeError(f"API error ({resp.status_code}): {resp.text[:200]}")
     data = resp.json()
-    return data.get("choices", [{}])[0].get("message", {}).get("content", "")
+    msg = data.get("choices", [{}])[0].get("message", {})
+    # MiMo v2.6-pro sometimes returns the actual output in reasoning_content
+    # (with content=null). Fall back so we never return empty for a 200 response.
+    return msg.get("content") or msg.get("reasoning_content") or ""
 
 
 def parse_page_with_mimo(image: Image.Image, api_key: str, page_num: int, total_pages: int) -> str:

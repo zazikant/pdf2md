@@ -112,6 +112,10 @@ const OPENCODE_API_URL = 'https://opencode.ai/zen/go/v1/chat/completions'
 const MIMO_MODEL = 'mimo-v2.6-pro'
 const IMAGE_EXTENSIONS = new Set(['png', 'jpg', 'jpeg', 'webp'])
 
+// OpenCode Go API requires an x-opencode-session header for routing.
+// One stable id per skill run keeps all page requests on the same upstream.
+const OPENCODE_SESSION_ID = `pdf2md-skill-${Math.random().toString(36).slice(2, 14)}`
+
 // Same system prompt as the Streamlit app (api.py)
 const SYSTEM_PROMPT = `You are a precise document-to-Markdown conversion engine. You receive page images and output clean, structured Markdown.
 
@@ -184,6 +188,7 @@ async function callMimoVision(
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${apiKey}`,
+      'x-opencode-session': OPENCODE_SESSION_ID,
     },
     body: JSON.stringify({
       model: MIMO_MODEL,
@@ -212,7 +217,10 @@ async function callMimoVision(
   }
 
   const data = await resp.json()
-  return data?.choices?.[0]?.message?.content ?? ''
+  const msg = data?.choices?.[0]?.message ?? {}
+  // MiMo v2.6-pro sometimes returns the actual output in reasoning_content
+  // (with content=null). Fall back so we never return empty for a 200 response.
+  return msg.content || msg.reasoning_content || ''
 }
 
 // Same stitch logic as the Streamlit app
@@ -422,6 +430,7 @@ Test the OpenCode API key works with MiMo v2.6 Pro:
 curl -s https://opencode.ai/zen/go/v1/chat/completions \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer sk-YOUR-KEY" \
+  -H "x-opencode-session: my-test-session" \
   -d '{"model":"mimo-v2.6-pro","messages":[{"role":"user","content":"Say hi"}],"max_tokens":50}'
 ```
 

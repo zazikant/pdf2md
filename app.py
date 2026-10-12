@@ -244,7 +244,14 @@ def image_to_base64(img: Image.Image, fmt: str = "PNG") -> str:
     return base64.b64encode(buffer.getvalue()).decode("utf-8")
 
 
-# -- MiMo v2.6 Pro API ------------------------------------------------------------
+# -- MiMo v2.6 Pro API --------------------------------------------------------
+
+# OpenCode Go API requires an x-opencode-session header for request routing.
+# We generate one stable session id per app run so all page requests in a
+# single conversion share routing affinity.
+import uuid as _uuid
+_SESSION_ID = f"pdf2md-{_uuid.uuid4().hex[:12]}"
+
 
 def call_mimo_vision(image: Image.Image, api_key: str, prompt: str, mime_type: str = "image/png") -> str:
     """Send an image to MiMo v2.6 Pro vision and get text back."""
@@ -261,6 +268,7 @@ def call_mimo_vision(image: Image.Image, api_key: str, prompt: str, mime_type: s
         headers={
             "Content-Type": "application/json",
             "Authorization": f"Bearer {api_key}",
+            "x-opencode-session": _SESSION_ID,
         },
         json={
             "model": MIMO_MODEL,
@@ -279,7 +287,10 @@ def call_mimo_vision(image: Image.Image, api_key: str, prompt: str, mime_type: s
         raise RuntimeError(f"API error ({resp.status_code}): {resp.text[:200]}")
 
     data = resp.json()
-    return data.get("choices", [{}])[0].get("message", {}).get("content", "")
+    msg = data.get("choices", [{}])[0].get("message", {})
+    # MiMo v2.6-pro sometimes returns the actual output in reasoning_content
+    # (with content=null). Fall back so we never return empty for a 200 response.
+    return msg.get("content") or msg.get("reasoning_content") or ""
 
 
 def parse_page_with_mimo(image: Image.Image, api_key: str, page_num: int, total_pages: int) -> str:
