@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 PDF/Image to Markdown — Same engine as https://pdf2md-api.streamlit.app/
-Uses MiMo v2.5 AI Vision + PyMuPDF via OpenCode API.
+Uses MiMo v2.6 Pro AI Vision + PyMuPDF via OpenCode API.
 
 Usage:
   # Parse a PDF file
@@ -39,7 +39,7 @@ except ImportError:
 # ── Config ──────────────────────────────────────────────────────────────
 
 OPENCODE_API_URL = "https://opencode.ai/zen/go/v1/chat/completions"
-MIMO_MODEL = "mimo-v2.5"
+MIMO_MODEL = "mimo-v2.6-pro"
 SUPPORTED_EXTENSIONS = {"pdf", "png", "jpg", "jpeg", "webp"}
 IMAGE_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
 
@@ -291,7 +291,7 @@ def main():
             file_bytes = f.read()
 
         if file_ext == "pdf" and args.mode == "mimo":
-            print(f"📄 PDF → MiMo v2.5 (DPI={args.dpi})")
+            print(f"📄 PDF → MiMo v2.6 Pro (DPI={args.dpi})")
             page_images = pdf_to_images(file_bytes, dpi=args.dpi)
             total = len(page_images)
             print(f"  {total} page(s) extracted")
@@ -304,7 +304,7 @@ def main():
             final_md = stitch_pages(all_md)
 
         elif file_ext in IMAGE_EXTENSIONS and args.mode == "mimo":
-            print(f"🖼️  Image → MiMo v2.5")
+            print(f"🖼️  Image → MiMo v2.6 Pro")
             img = Image.open(io.BytesIO(file_bytes))
             mime = f"image/{file_ext if file_ext != 'jpg' else 'jpeg'}"
             final_md = parse_standalone_image_with_mimo(img, args.api_key, mime_type=mime)

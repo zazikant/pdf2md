@@ -7,10 +7,10 @@ description: |
   Two modes:
   1. URL mode: Uses Browserless CDP to smartly render the page (scroll for
      lazy-load, wait for JS, take viewport screenshots), then sends each
-     screenshot to MiMo v2.5 vision via the OpenCode API — the same engine
+     screenshot to MiMo v2.6 Pro vision via the OpenCode API — the same engine
      that powers the Streamlit app.
   2. File mode: Sends PDF/PNG/JPG/JPEG/WEBP directly to the Streamlit app's
-     conversion engine (PyMuPDF + MiMo v2.5) — no Browserless needed.
+     conversion engine (PyMuPDF + MiMo v2.6 Pro) — no Browserless needed.
 
   Outputs GFM tables, Mermaid diagrams for infographics, and faithful
   document structure.
@@ -40,11 +40,11 @@ inputs:
   parse_mode:
     type: string
     default: "mimo"
-    description: "Parser: 'mimo' uses MiMo v2.5 AI Vision (requires opencode_api_key). 'local' uses text-only extraction (PDF only, no API key)."
+    description: "Parser: 'mimo' uses MiMo v2.6 Pro AI Vision (requires opencode_api_key). 'local' uses text-only extraction (PDF only, no API key)."
   opencode_api_key:
     type: string
     default: "xxxx"
-    description: "OpenCode API key for MiMo v2.5 (sk-...). Required for mimo mode. Get yours at opencode.ai/go."
+    description: "OpenCode API key for MiMo v2.6 Pro (sk-...). Required for mimo mode. Get yours at opencode.ai/go."
   browserless_token:
     type: string
     default: ""
@@ -68,7 +68,7 @@ dependencies:
 
 # PDF to Markdown — Powered by PDF2MD Streamlit App
 
-This skill converts URLs and files to structured Markdown using the same MiMo v2.5 AI Vision engine that powers the [PDF2MD Streamlit app](https://pdf2md-api.streamlit.app/).
+This skill converts URLs and files to structured Markdown using the same MiMo v2.6 Pro AI Vision engine that powers the [PDF2MD Streamlit app](https://pdf2md-api.streamlit.app/).
 
 **App**: [https://pdf2md-api.streamlit.app/](https://pdf2md-api.streamlit.app/)
 
@@ -82,7 +82,7 @@ For web pages, JS-heavy sites, login-walled content:
 2. **Wait for JS**: `domcontentloaded` + extra delay for JS rendering
 3. **Auto-scroll**: Scrolls down N times to trigger lazy-loaded images/content
 4. **Viewport screenshots**: Takes viewport-sized PNG screenshots by scrolling through the full page
-5. **MiMo v2.5 per screenshot**: Each screenshot → OpenCode MiMo API → Markdown
+5. **MiMo v2.6 Pro per screenshot**: Each screenshot → OpenCode MiMo API → Markdown
 6. **Stitch**: All page Markdown results combined into one document
 
 **Why screenshots instead of PDF?** The Browserless `/pdf` endpoint only does a basic
@@ -94,8 +94,8 @@ Tested on gemengserv.com: screenshots captured **3.4x more content** than the ra
 
 For PDF/PNG/JPG/JPEG/WEBP files — uses the same conversion engine as the Streamlit app:
 
-- **PDF**: Render pages to images via PyMuPDF, send each to MiMo v2.5
-- **Images**: Base64-encode, send directly to MiMo v2.5
+- **PDF**: Render pages to images via PyMuPDF, send each to MiMo v2.6 Pro
+- **Images**: Base64-encode, send directly to MiMo v2.6 Pro
 - **Local mode**: Text-only PDF extraction via PyMuPDF (no API key needed)
 - **Stitch results** into one Markdown document
 
@@ -109,7 +109,7 @@ import { basename, extname } from 'path'
 
 // Same API config as the Streamlit app
 const OPENCODE_API_URL = 'https://opencode.ai/zen/go/v1/chat/completions'
-const MIMO_MODEL = 'mimo-v2.5'
+const MIMO_MODEL = 'mimo-v2.6-pro'
 const IMAGE_EXTENSIONS = new Set(['png', 'jpg', 'jpeg', 'webp'])
 
 // Same system prompt as the Streamlit app (api.py)
@@ -246,7 +246,7 @@ export default skill(async (input) => {
   const browserlessToken = input.browserless_token || process.env.BROWSERLESS_TOKEN || ''
 
   if (parseMode === 'mimo' && (!apiKey || apiKey === 'xxxx')) {
-    throw new Error('MiMo v2.5 mode requires an OpenCode API key. Set opencode_api_key (sk-...). Get yours at opencode.ai/go')
+    throw new Error('MiMo v2.6 Pro mode requires an OpenCode API key. Set opencode_api_key (sk-...). Get yours at opencode.ai/go')
   }
 
   if (!input.url && !input.file) {
@@ -410,19 +410,19 @@ export default skill(async (input) => {
 
 ## Streamlit App
 
-The hosted Streamlit app uses the same MiMo v2.5 engine:
+The hosted Streamlit app uses the same MiMo v2.6 Pro engine:
 - **UI**: [https://pdf2md-api.streamlit.app/](https://pdf2md-api.streamlit.app/)
 - **API mode**: [https://pdf2md-api.streamlit.app/?api=1](https://pdf2md-api.streamlit.app/?api=1)
 
 ## Quick Test (curl)
 
-Test the OpenCode API key works with MiMo v2.5:
+Test the OpenCode API key works with MiMo v2.6 Pro:
 
 ```bash
 curl -s https://opencode.ai/zen/go/v1/chat/completions \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer sk-YOUR-KEY" \
-  -d '{"model":"mimo-v2.5","messages":[{"role":"user","content":"Say hi"}],"max_tokens":50}'
+  -d '{"model":"mimo-v2.6-pro","messages":[{"role":"user","content":"Say hi"}],"max_tokens":50}'
 ```
 
 ## Source Code

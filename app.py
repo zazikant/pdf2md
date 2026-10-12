@@ -1,11 +1,11 @@
 """
-PDF to Markdown Converter — Powered by MiMo v2.5 + PyMuPDF
+PDF to Markdown Converter — Powered by MiMo v2.6 Pro + PyMuPDF
 ==========================================================
 A Streamlit app that converts PDFs to Markdown using AI vision.
 
 Pipeline:
   1. PDF -> page images (PyMuPDF/fitz, pure Python, no system deps)
-  2. Each page image -> MiMo v2.5 vision API -> structured Markdown
+  2. Each page image -> MiMo v2.6 Pro vision API -> structured Markdown
   3. All pages stitched together into a single .md file
 
 No database needed. No system binaries needed. Deploys anywhere.
@@ -26,7 +26,7 @@ from PIL import Image
 # -- Config -------------------------------------------------------------------
 
 OPENCODE_API_URL = "https://opencode.ai/zen/go/v1/chat/completions"
-MIMO_MODEL = "mimo-v2.5"
+MIMO_MODEL = "mimo-v2.6-pro"
 SUPPORTED_EXTENSIONS = ["pdf", "png", "jpg", "jpeg", "webp", "docx", "xlsx", "pptx"]
 IMAGE_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
 
@@ -244,10 +244,10 @@ def image_to_base64(img: Image.Image, fmt: str = "PNG") -> str:
     return base64.b64encode(buffer.getvalue()).decode("utf-8")
 
 
-# -- MiMo v2.5 API ------------------------------------------------------------
+# -- MiMo v2.6 Pro API ------------------------------------------------------------
 
 def call_mimo_vision(image: Image.Image, api_key: str, prompt: str, mime_type: str = "image/png") -> str:
-    """Send an image to MiMo v2.5 vision and get text back."""
+    """Send an image to MiMo v2.6 Pro vision and get text back."""
     fmt = "PNG" if "png" in mime_type else "JPEG"
     b64 = image_to_base64(image, fmt=fmt)
 
@@ -283,14 +283,14 @@ def call_mimo_vision(image: Image.Image, api_key: str, prompt: str, mime_type: s
 
 
 def parse_page_with_mimo(image: Image.Image, api_key: str, page_num: int, total_pages: int) -> str:
-    """Send a PDF page image to MiMo v2.5 and get Markdown back."""
+    """Send a PDF page image to MiMo v2.6 Pro and get Markdown back."""
     context = f"This is page {page_num} of {total_pages} from a document. " if total_pages > 1 else ""
     prompt = PAGE_PROMPT_TEMPLATE.format(context=context)
     return call_mimo_vision(image, api_key, prompt, mime_type="image/png")
 
 
 def parse_standalone_image_with_mimo(image: Image.Image, api_key: str, mime_type: str = "image/png") -> str:
-    """Send a standalone image (PNG/JPG) to MiMo v2.5 for OCR."""
+    """Send a standalone image (PNG/JPG) to MiMo v2.6 Pro for OCR."""
     return call_mimo_vision(image, api_key, IMAGE_PROMPT, mime_type=mime_type)
 
 
@@ -340,7 +340,7 @@ def main():
     )
 
     st.title("📄 PDF to Markdown")
-    st.caption("MiMo v2.5 AI Vision + PyMuPDF — Smart multi-page handling, no system deps needed")
+    st.caption("MiMo v2.6 Pro AI Vision + PyMuPDF — Smart multi-page handling, no system deps needed")
 
     # -- Sidebar ---------------------------------------------------------------
     with st.sidebar:
@@ -350,7 +350,7 @@ def main():
             "OpenCode Go API Key",
             type="password",
             placeholder="sk-... (from opencode.ai/go)",
-            help="Required for MiMo v2.5. Get yours at opencode.ai/go",
+            help="Required for MiMo v2.6 Pro. Get yours at opencode.ai/go",
         )
 
         st.markdown("---")
@@ -358,12 +358,12 @@ def main():
         parse_mode = st.radio(
             "Parser",
             options=["mimo", "local"],
-            format_func=lambda x: "🤖 MiMo v2.5 (AI Vision)" if x == "mimo" else "💻 Local (PyMuPDF, no API key)",
+            format_func=lambda x: "🤖 MiMo v2.6 Pro (AI Vision)" if x == "mimo" else "💻 Local (PyMuPDF, no API key)",
             help="MiMo: AI-powered vision for any file type. Local: Text extraction only, no API key needed.",
         )
 
         if parse_mode == "mimo" and not api_key:
-            st.warning("⚠️ MiMo v2.5 requires an API key above.")
+            st.warning("⚠️ MiMo v2.6 Pro requires an API key above.")
 
         st.markdown("---")
 
@@ -381,7 +381,7 @@ def main():
             """
             **How it works:**
             1. PDF → page images (PyMuPDF)
-            2. Each page → MiMo v2.5 vision
+            2. Each page → MiMo v2.6 Pro vision
             3. Results stitched into one .md
 
             **No database. No system binaries. Pure Python.**
@@ -408,10 +408,10 @@ def main():
 
             can_parse = True
             if parse_mode == "mimo" and not api_key:
-                st.error("MiMo v2.5 requires an API key. Add it in the sidebar.")
+                st.error("MiMo v2.6 Pro requires an API key. Add it in the sidebar.")
                 can_parse = False
             if parse_mode == "local" and file_ext in IMAGE_EXTENSIONS:
-                st.error("Local mode can't process images. Switch to MiMo v2.5.")
+                st.error("Local mode can't process images. Switch to MiMo v2.6 Pro.")
                 can_parse = False
 
             parse_btn = st.button(
@@ -454,7 +454,7 @@ def main():
                     st.stop()
 
                 total = len(page_images)
-                status.update(label=f"Processing {total} page{'s' if total != 1 else ''} with MiMo v2.5...")
+                status.update(label=f"Processing {total} page{'s' if total != 1 else ''} with MiMo v2.6 Pro...")
 
                 progress_bar = st.progress(0, text=f"Page 0/{total}")
 
@@ -493,7 +493,7 @@ def main():
                 final_md = stitch_pages(all_markdown)
                 elapsed = time.time() - t0
 
-                method = f"MiMo v2.5 Vision — {total} page{'s' if total != 1 else ''}"
+                method = f"MiMo v2.6 Pro Vision — {total} page{'s' if total != 1 else ''}"
                 if error_count > 0:
                     method += f" ({error_count} errors)"
 
@@ -504,7 +504,7 @@ def main():
 
         # -- Standalone image with MiMo ----------------------------------------
         elif file_ext in IMAGE_EXTENSIONS and parse_mode == "mimo":
-            with st.status("Processing image with MiMo v2.5...", expanded=True) as status:
+            with st.status("Processing image with MiMo v2.6 Pro...", expanded=True) as status:
                 t0 = time.time()
                 mime_map = {"png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg", "webp": "image/webp"}
                 mime = mime_map.get(file_ext, "image/png")
@@ -520,7 +520,7 @@ def main():
                     st.stop()
 
                 elapsed = time.time() - t0
-                method = "MiMo v2.5 Vision (OpenCode Go)"
+                method = "MiMo v2.6 Pro Vision (OpenCode Go)"
                 status.update(label=f"✅ Done in {elapsed:.1f}s", state="complete")
 
         # -- Local PDF extraction -----------------------------------------------
@@ -534,7 +534,7 @@ def main():
                     st.stop()
 
                 if not final_md.strip():
-                    st.warning("No text found. It might be scanned — try MiMo v2.5 for AI vision.")
+                    st.warning("No text found. It might be scanned — try MiMo v2.6 Pro for AI vision.")
                     st.stop()
 
                 elapsed = time.time() - t0
@@ -583,7 +583,7 @@ def main():
                 st.markdown(
                     """
                     1. **PDF → Page Images**: Each page is rendered to a high-quality PNG using PyMuPDF (pure Python, no system deps)
-                    2. **Per-Page AI Vision**: Each page image is sent to MiMo v2.5 for intelligent text extraction & structuring
+                    2. **Per-Page AI Vision**: Each page image is sent to MiMo v2.6 Pro for intelligent text extraction & structuring
                     3. **Stitch**: All page Markdown results are combined into a single document with page separators
 
                     **Why page-by-page?**
